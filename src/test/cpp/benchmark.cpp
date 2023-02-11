@@ -9,22 +9,28 @@
 // on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
 // for the specific language governing permissions and limitations under the License.
 
+#include <csignal>
 #include "../../main/include/nesp_logger.h"
 #include "../../main/include/nesp_logger_manager.h"
 
 using namespace NespLogger;
 
 int main() {
-    LoggerManager *loggerManager = LoggerManager::shared();
+    long int i = 99999999999999999;
 
-    loggerManager->initialize(false, "", "");
-    Logger *logger = loggerManager->getLogger("Test");
-    logger->info(1, "main-thread", "Test", "main", 12, "this is info message");
-    logger->debug(1, "main-thread", "Test", "main", 13, "this is debug message");
-    logger->warn(1, "main-thread", "Test", "main", 14, "this is warn message");
-    logger->error(1, "main-thread", "Test", "main", 15, "this is error message");
-    logger->fatal(1, "main-thread", "Test", "main", 16, "this is fatal message");
+    while (i-- > 0) {
+        LoggerManager *loggerManager = LoggerManager::shared();
+        Logger *logger = loggerManager->getLogger("Test");
+        loggerManager->initialize(false, "", "");
+        logger->info(1, "main-thread", "Test", "main", 12, "this is info message");
+        logger->debug(1, "main-thread", "Test", "main", 13, "this is debug message");
+        logger->warn(1, "main-thread", "Test", "main", 14, "this is warn message");
+        logger->error(1, "main-thread", "Test", "main", 15, "this is error message");
+        logger->fatal(1, "main-thread", "Test", "main", 16, "this is fatal message");
 
-    delete loggerManager;
+        delete loggerManager;
+        sleep(1);
+    }
+
     return 0;
 }

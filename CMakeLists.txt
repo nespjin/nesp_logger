@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB header_files src/main/include/*.h)
 file(GLOB source_files src/main/include/*.h src/main/cpp/*.cpp)
-file(GLOB test_source_files src/test/include/*.h src/test/cpp/*.cpp)
+#file(GLOB test_source_files src/test/include/*.h src/test/cpp/*.cpp)
 
 add_library(
         nesp_logger
@@ -14,9 +14,17 @@ add_library(
         ${source_files}
 )
 
-add_executable(test ${test_source_files})
+#add_executable(test ${test_source_files})
+
+add_executable(benchmark src/test/cpp/benchmark.cpp)
+
+
+#target_link_libraries(
+#        test
+#        nesp_logger
+#)
 
 target_link_libraries(
-        test
+        benchmark
         nesp_logger
 )
