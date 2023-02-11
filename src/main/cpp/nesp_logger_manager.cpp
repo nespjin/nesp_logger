@@ -70,4 +70,6 @@ LoggerManager::~LoggerManager() {
     }
 
     loggerCache.clear();
+
+    instance = nullptr;
 }
