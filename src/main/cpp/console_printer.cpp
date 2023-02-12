@@ -48,7 +48,7 @@ void ConsolePrinter::print(Logger::LogRecord logRecord) {
     } else if (record.level == Logger::Level::FATAL) {
         color = BOLDRED;
     }
-    cout << color << record.messageFormatted << "\n";
+    cout << color << record.messageFormatted << endl;
 }
 
 ConsolePrinter::~ConsolePrinter() = default;
