@@ -52,7 +52,7 @@ void LoggerManager::initialize(bool isDebug, const string &directoryPath, const 
 }
 
 Logger *LoggerManager::getLogger(const string &name) {
-    const int count = loggerCache.count(name);
+    const ulong count = loggerCache.count(name);
     if (count > 0 && loggerCache[name] != nullptr) {
         return loggerCache[name];
     }
