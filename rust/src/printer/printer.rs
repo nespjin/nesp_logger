@@ -10,23 +10,8 @@
  * for the specific language governing permissions and limitations under the License.
  */
 
-#[derive(Debug)]
-pub enum Level {
-    Debug,
-    Info,
-    Warn,
-    Error,
-    Fatal,
-}
+use crate::log_record::LogRecord;
 
-impl Level {
-    pub fn index(&self) -> u32 {
-        match self {
-            Level::Debug => return 0,
-            Level::Info => return 1,
-            Level::Warn => return 2,
-            Level::Error => return 3,
-            Level::Fatal => return 4,
-        }
-    }
+pub trait Printer {
+    fn print(&self, record: LogRecord);
 }

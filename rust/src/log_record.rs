@@ -13,16 +13,16 @@
 use crate::level::Level;
 
 #[derive(Debug)]
-struct LogRecord {
-    time: u64,
-    pid: u32,
-    thread_name: String,
-    log_name: String,
-    class_name: String,
-    method_name: String,
-    line_number: u32,
-    level: Level,
-    message: String,
-    message_formatted: String,
-    exp: String,
+pub struct LogRecord {
+    pub time: i64,
+    pub pid: u32,
+    pub thread_name: String,
+    pub log_name: String,
+    pub class_name: String,
+    pub method_name: String,
+    pub line_number: u32,
+    pub level: Level,
+    pub message: String,
+    pub message_formatted: String,
+    pub exp: String,
 }
