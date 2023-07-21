@@ -1,12 +1,15 @@
 // Copyright (c) 2023-2023. NESP Technology.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License. You may obtain a copy of the License at
+// you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
-// on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
-// for the specific language governing permissions and limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
 
 //
 // Created by jinzhaolu on 2023/2/11.
@@ -15,40 +18,44 @@
 #ifndef NESP_LOGGER_DEFAULT_LOG_CONFIG_H
 #define NESP_LOGGER_DEFAULT_LOG_CONFIG_H
 
+#include <memory>
+
 #include "../include/nesp_logger.h"
 
-namespace NespLogger {
-    class DefaultLogConfig : public Logger::Config {
-    private:
-        set<Logger::Printer *> printers;
-        bool _isEnable;
+namespace nesp {
+namespace logger {
+class DefaultLogConfig : public Logger::Config {
+ private:
+  set<std::shared_ptr<Logger::Printer> > printers_;
+  bool is_enable_;
 
-        Logger::Format *format;
-        Logger::Filter *filter;
+  Logger::Formatter *format_;
+  Logger::Filter *filter_;
 
-    public:
-        DefaultLogConfig();
+ public:
+  DefaultLogConfig();
 
-        Logger::Format *getFormat() override;
+  Logger::Formatter *format() override;
 
-        Logger::Level getLevel() override;
+  Logger::Level level() override;
 
-        Logger::Filter *getFilter() override;
+  Logger::Filter *filter() override;
 
-        void setFilter(Logger::Filter *filter) override;
+  void set_filter(Logger::Filter *filter) override;
 
-        bool isEnable() override;
+  bool enable() override;
 
-        void setEnable(bool isEnable) override;
+  void set_enable(bool enable) override;
 
-        void addPrinter(Logger::Printer *printer) override;
+  void AddPrinter(std::shared_ptr<Logger::Printer> printer) override;
 
-        void removePrinter(Logger::Printer *printer) override;
+  void RemovePrinter(std::shared_ptr<Logger::Printer> printer) override;
 
-        set<Logger::Printer *> getPrinters() override;
+  set<std::shared_ptr<Logger::Printer>> printers() override;
 
-        ~DefaultLogConfig() override;
-    };
-}
+  ~DefaultLogConfig() override;
+};
+}  // namespace logger
+}  // namespace nesp
 
-#endif //NESP_LOGGER_DEFAULT_LOG_CONFIG_H
+#endif  // NESP_LOGGER_DEFAULT_LOG_CONFIG_H

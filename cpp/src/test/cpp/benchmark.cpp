@@ -13,20 +13,20 @@
 #include "../../main/include/nesp_logger.h"
 #include "../../main/include/nesp_logger_manager.h"
 
-using namespace NespLogger;
+using namespace nesp::logger;
 
 int main() {
     long int i = 99999999999999999;
 
     while (i-- > 0) {
         LoggerManager *loggerManager = LoggerManager::shared();
-        Logger *logger = loggerManager->getLogger("Test");
-        loggerManager->initialize(false, "", "");
-        logger->info(1, "main-thread", "Test", "main", 12, "this is info message");
-        logger->debug(1, "main-thread", "Test", "main", 13, "this is debug message");
-        logger->warn(1, "main-thread", "Test", "main", 14, "this is warn message");
-        logger->error(1, "main-thread", "Test", "main", 15, "this is error message");
-        logger->fatal(1, "main-thread", "Test", "main", 16, "this is fatal message");
+        Logger *logger = loggerManager->logger("Test");
+        loggerManager->Initialize(false, "", "");
+        logger->Info(1, "main-thread", "Test", "main", 12, "this is info message");
+        logger->Debug(1, "main-thread", "Test", "main", 13, "this is Debug message");
+        logger->Warn(1, "main-thread", "Test", "main", 14, "this is warn message");
+        logger->Error(1, "main-thread", "Test", "main", 15, "this is error message");
+        logger->Fatal(1, "main-thread", "Test", "main", 16, "this is fatal message");
 
         delete loggerManager;
         sleep(1);

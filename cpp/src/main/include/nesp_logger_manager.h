@@ -1,12 +1,15 @@
 // Copyright (c) 2023-2023. NESP Technology.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License. You may obtain a copy of the License at
+// you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
-// on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
-// for the specific language governing permissions and limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
 
 //
 // Created by jinzhaolu on 23-1-31.
@@ -15,35 +18,42 @@
 #ifndef NESP_LOGGER_NESP_LOGGER_MANAGER_H
 #define NESP_LOGGER_NESP_LOGGER_MANAGER_H
 
-#include <string>
 #include <map>
-#include "nesp_logger.h"
-#include "logger_impl.h"
+#include <memory>
+#include <string>
+
 #include "console_printer.h"
+#include "logger_impl.h"
+#include "nesp_logger.h"
 
 using namespace std;
 
-namespace NespLogger {
-    class LoggerManager {
-    private:
-        LoggerManager();
+namespace nesp {
+namespace logger {
+class LoggerManager {
+ private:
+  LoggerManager();
 
-        map<string, Logger *> loggerCache;
-        static LoggerManager *instance;
+  map<string, std::shared_ptr<Logger>> logger_cache_;
+  static LoggerManager *instance_;
 
-        ConsolePrinter *consolePrinter;
-        Logger::Config *config;
-    public:
-        static LoggerManager *shared();
+  std::shared_ptr<ConsolePrinter> console_printer_;
+  Logger::Config *config_;
 
-        Logger::Config *getConfig();
+ public:
+  static LoggerManager *shared();
 
-        void initialize(bool isDebug, const string &directoryPath, const string &fileName);
+  Logger::Config *config();
 
-        Logger *getLogger(const string &name);
+  void Initialize(bool debug, const string &directory_path,
+                  const string &file_name);
 
-        ~LoggerManager();
-    };
-}
+  Logger *logger(const string &name);
 
-#endif //NESP_LOGGER_NESP_LOGGER_MANAGER_H
+  ~LoggerManager();
+};
+
+}  // namespace logger
+}  // namespace nesp
+
+#endif  // NESP_LOGGER_NESP_LOGGER_MANAGER_H

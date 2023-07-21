@@ -23,9 +23,9 @@
 
 int main() {
 
-    const auto os = NespLogger::System::getOSName();
+    const auto os = nesp::logger::System::os_name();
     cout << os << endl;
-    const auto architecture = NespLogger::System::getArchitectureName();
+    const auto architecture = nesp::logger::System::architecture_name();
     cout << architecture << endl;
 
     string src = "dsadasdasdsa";
@@ -35,7 +35,7 @@ int main() {
 
     const string dest;
 
-    const long size = NespLogger::GzipUtil::compress(src.c_str(), size_src, compressed, size_src * 2);
+    const long size = nesp::logger::GzipUtil::Compress(src.c_str(), size_src, compressed, size_src * 2);
     if (size <= 0) {
         cout << "compress error";
         return -1;

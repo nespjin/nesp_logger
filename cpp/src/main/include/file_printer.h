@@ -1,12 +1,15 @@
 // Copyright (c) 2023. NESP Technology.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License. You may obtain a copy of the License at
+// you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
-// on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
-// for the specific language governing permissions and limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
 
 //
 // Team: NESP Technology
@@ -21,62 +24,63 @@
 
 #include "nesp_logger.h"
 
-namespace NespLogger {
-    class FilePrinter final : public Logger::Printer {
+namespace nesp {
+namespace logger {
+class FilePrinter final : public Logger::Printer {
+ public:
+  class CompressNameFormat {
+    /**
+     * Returns the name for compressed file.
+     *
+     * @param file_name the name of origin file.
+     * @param num the number of current log file.
+     **/
+    virtual string Format(string file_name, int num) = 0;
 
-    public:
-        class CompressNameFormat {
-            /**
-             * Returns the name for compressed file.
-             *
-             * @param fileName the name of origin file.
-             * @param num the number of current log file.
-             **/
-            virtual string format(string fileName, int num) = 0;
+   public:
+    virtual ~CompressNameFormat() = default;
+  };
 
-        public:
-            virtual ~CompressNameFormat() = default;
-        };
+ private:
+  string dir_path_;
 
-    private:
-        string dirPath;
+  /** The name of the log file to write, default log */
+  string file_name_;
 
-        /** The name of the log file to write, default log */
-        string fileName;
+  CompressNameFormat *compress_name_format_;
 
-        CompressNameFormat *compressNameFormat;
+  /** The max size for per log file, default 100M */
+  unsigned long max_per_file_size_;
 
-        /** The max size for per log file, default 100M */
-        unsigned long maxPerFileSize;
+  /** The max log file count, default 5 */
+  unsigned int max_file_count_;
 
-        /** The max log file count, default 5 */
-        unsigned int maxFileCount;
+  bool is_async_;
 
-        bool _isAsync;
+ public:
+  explicit FilePrinter(const string &dir_path);
 
-    public:
-        explicit FilePrinter(const string &dirPath);
+  void set_file_name(const string &name);
 
-        void setFileName(const string &name);
+  string file_name();
 
-        string getFileName();
+  void set_max_per_file_size(ulong size);
 
-        void setMaxPerFileSize(ulong size);
+  ulong max_per_file_size();
 
-        ulong getMaxPerFileSize();
+  void set_max_file_count(uint count);
 
-        void setMaxFileCount(uint count);
+  uint max_file_count();
 
-        uint getMaxFileCount();
+  void set_async(bool async);
 
-        void setAsync(bool async);
+  bool async();
 
-        bool isAsync();
+  void Print(Logger::LogRecord log_record) override;
 
-        void print(Logger::LogRecord logRecord) override;
+  ~FilePrinter() override;
+};
+}  // namespace logger
+}  // namespace nesp
 
-        ~FilePrinter() override;
-    };
-}
-
-#endif //NESP_LOGGER_FILE_PRINTER_H
+#endif  // NESP_LOGGER_FILE_PRINTER_H

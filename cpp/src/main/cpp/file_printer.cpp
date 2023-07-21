@@ -1,17 +1,22 @@
 // Copyright (c) 2023. NESP Technology.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License. You may obtain a copy of the License at
+// you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
-// on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
-// for the specific language governing permissions and limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
 
-#include <iostream>
-#include <sys/stat.h>
-#include <fstream>
 #include "../include/file_printer.h"
+
+#include <sys/stat.h>
+
+#include <fstream>
+#include <iostream>
 
 //
 // Team: NESP Technology
@@ -25,102 +30,97 @@
 
 using namespace std;
 
-namespace NespLogger {
-    class DefaultCompressNameFormat : public FilePrinter::CompressNameFormat {
-        string format(string fileName, int num) override {
-            return fileName + "-" + to_string(num) + ".gz";
-        }
+namespace nesp {
+namespace logger {
+class DefaultCompressNameFormat : public FilePrinter::CompressNameFormat {
+  string Format(string file_name, int num) override {
+    return file_name + "-" + to_string(num) + ".gz";
+  }
 
-        ~DefaultCompressNameFormat() override = default;
-    };
+  ~DefaultCompressNameFormat() override = default;
+};
+}  // namespace logger
+}  // namespace nesp
+
+nesp::logger::FilePrinter::FilePrinter(const string &dirPath) {
+  this->dir_path_ = dirPath;
+  this->file_name_ = "log";
+  this->compress_name_format_ = new DefaultCompressNameFormat();
+  this->max_per_file_size_ = 1024 * 1024 * 100L;  // 100M
+  this->max_file_count_ = 5;
+  this->is_async_ = false;
 }
 
-NespLogger::FilePrinter::FilePrinter(const string &dirPath) {
-    this->dirPath = dirPath;
-    this->fileName = "log";
-    this->compressNameFormat = new DefaultCompressNameFormat();
-    this->maxPerFileSize = 1024 * 1024 * 100L; // 100M
-    this->maxFileCount = 5;
-    this->_isAsync = false;
+void nesp::logger::FilePrinter::set_file_name(const string &name) {
+  this->file_name_ = name;
 }
 
-void NespLogger::FilePrinter::setFileName(const string &name) {
-    this->fileName = name;
+string nesp::logger::FilePrinter::file_name() { return file_name_; }
+
+void nesp::logger::FilePrinter::set_max_per_file_size(ulong size) {
+  this->max_per_file_size_ = size;
 }
 
-string NespLogger::FilePrinter::getFileName() {
-    return fileName;
+ulong nesp::logger::FilePrinter::max_per_file_size() {
+  return max_per_file_size_;
 }
 
-void NespLogger::FilePrinter::setMaxPerFileSize(ulong size) {
-    this->maxPerFileSize = size;
+void nesp::logger::FilePrinter::set_max_file_count(uint count) {
+  this->max_file_count_ = count;
 }
 
-ulong NespLogger::FilePrinter::getMaxPerFileSize() {
-    return maxPerFileSize;
+uint nesp::logger::FilePrinter::max_file_count() { return max_file_count_; }
+
+void nesp::logger::FilePrinter::set_async(bool async) {
+  this->is_async_ = async;
 }
 
-void NespLogger::FilePrinter::setMaxFileCount(uint count) {
-    this->maxFileCount = count;
-}
+bool nesp::logger::FilePrinter::async() { return this->is_async_; }
 
-uint NespLogger::FilePrinter::getMaxFileCount() {
-    return maxFileCount;
-}
-
-void NespLogger::FilePrinter::setAsync(bool async) {
-    this->_isAsync = async;
-}
-
-bool NespLogger::FilePrinter::isAsync() {
-    return this->_isAsync;
-}
-
-string &trim(string &str) {
-    if (str.empty()) {
-        return str;
-    }
-
-    str.erase(0, str.find_first_not_of(' '));
-    str.erase(str.find_last_not_of(' '), 1);
-
+string &Trim(string &str) {
+  if (str.empty()) {
     return str;
+  }
+
+  str.erase(0, str.find_first_not_of(' '));
+  str.erase(str.find_last_not_of(' '), 1);
+
+  return str;
 }
 
-bool isDir(const string &dirPath) {
-    struct stat buffer{};
-    return (stat(dirPath.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode));
+bool isDir(const string &dir_path) {
+  struct stat buffer {};
+  return (stat(dir_path.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode));
 }
 
-void doPrint(const string &dirPath, NespLogger::Logger::LogRecord record);
+void DoPrint(const string &dir_path, nesp::logger::Logger::LogRecord record);
 
-void NespLogger::FilePrinter::print(NespLogger::Logger::LogRecord logRecord) {
-    if (trim(dirPath).empty()) {
-        cout << TAG << " print: The dirPath must not be empty";
-        return;
-    }
+void nesp::logger::FilePrinter::Print(
+    nesp::logger::Logger::LogRecord log_record) {
+  if (Trim(dir_path_).empty()) {
+    cout << TAG << " print: The dir path must not be empty";
+    return;
+  }
 
-    ifstream dir(dirPath);
+  ifstream dir(dir_path_);
 
-    // TODO: replace mkdir with mkdirs
-    if (!dir.good() && ::mkdir(dirPath.c_str(), 0777) != 0) {
-        cout << TAG << " print: mkdir log dir(" << dirPath << ") failed";
-        return;
-    }
+  // TODO: replace mkdir with mkdirs
+  if (!dir.good() && ::mkdir(dir_path_.c_str(), 0777) != 0) {
+    cout << TAG << " print: mkdir log dir(" << dir_path_ << ") failed";
+    return;
+  }
 
-    if (!isDir(dirPath)) {
-        cout << TAG << " print: dirPath is not a directory";
-        return;
-    }
+  if (!isDir(dir_path_)) {
+    cout << TAG << " print: dirPath is not a directory";
+    return;
+  }
 
-    // TODO: implements async
-    doPrint(dirPath, logRecord);
+  // TODO: implements async
+  DoPrint(dir_path_, log_record);
 }
 
-void doPrint(const string &dirPath, NespLogger::Logger::LogRecord record) {
+void DoPrint(const string &dir_path, nesp::logger::Logger::LogRecord record) {}
 
-}
-
-NespLogger::FilePrinter::~FilePrinter() {
-    delete this->compressNameFormat;
+nesp::logger::FilePrinter::~FilePrinter() {
+  delete this->compress_name_format_;
 }
