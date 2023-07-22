@@ -56,7 +56,7 @@ void LoggerManager::Initialize(bool debug, const string &directory_path,
 }
 
 Logger *LoggerManager::logger(const string &name) {
-  const ulong count = logger_cache_.count(name);
+  const uint64_t count = logger_cache_.count(name);
   if (count > 0 && logger_cache_[name] != nullptr &&
       logger_cache_[name].get() != nullptr) {
     return logger_cache_[name].get();

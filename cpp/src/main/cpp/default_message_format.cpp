@@ -20,8 +20,6 @@
 #include <ctime>
 #include <iostream>
 
-#include "../include/nesp_logger.h"
-
 string nesp::logger::DefaultMessageFormat::Format(Logger::LogRecord record) {
   char current_time_chars[255];
   std::time_t current_time = record.time;

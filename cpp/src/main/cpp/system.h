@@ -24,8 +24,7 @@
 
 #include <string>
 
-namespace nesp {
-namespace logger {
+namespace nesp::logger {
 class System {
  public:
   enum class OS {
@@ -73,7 +72,6 @@ class System {
 
   ~System() = default;
 };
-}  // namespace logger
-}  // namespace nesp
+}  // namespace nesp::logger
 
 #endif  // NESP_LOGGER_SYSTEM_H

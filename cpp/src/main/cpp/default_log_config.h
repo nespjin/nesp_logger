@@ -22,11 +22,10 @@
 
 #include "../include/nesp_logger.h"
 
-namespace nesp {
-namespace logger {
+namespace nesp::logger {
 class DefaultLogConfig : public Logger::Config {
  private:
-  set<std::shared_ptr<Logger::Printer> > printers_;
+  set<std::shared_ptr<Logger::Printer>> printers_;
   bool is_enable_;
 
   Logger::Formatter *format_;
@@ -55,7 +54,6 @@ class DefaultLogConfig : public Logger::Config {
 
   ~DefaultLogConfig() override;
 };
-}  // namespace logger
-}  // namespace nesp
+}  // namespace nesp::logger
 
 #endif  // NESP_LOGGER_DEFAULT_LOG_CONFIG_H

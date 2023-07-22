@@ -24,8 +24,7 @@
 
 using namespace std;
 
-namespace nesp {
-namespace logger {
+namespace nesp::logger {
 class Logger {
  public:
   enum Level { kDebug, kInfo, kWarn, kError, kFatal };
@@ -299,7 +298,6 @@ class LoggerUtil {
     return "UNKNOWN";
   }
 };
-}  // namespace logger
-}  // namespace nesp
+}  // namespace nesp::logger
 
 #endif  // NESP_LOGGER_NESP_LOGGER_H

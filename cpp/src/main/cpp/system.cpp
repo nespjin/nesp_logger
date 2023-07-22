@@ -31,7 +31,7 @@ using namespace nesp::logger;
 #ifdef _WIN32
 
 #ifdef _WIN64
-System::OS System::os = OS::WINDOWS_64;
+System::OS System::os_ = System::OS::kWindows64;
 #else
 System::OS System::os = OS::WINDOWS_32;
 #endif
@@ -151,7 +151,6 @@ std::string System::os_name() {
     default:
       return "UNKNOWN";
   }
-  return "UNKNOWN";
 }
 
 System::Architecture System::architecture() { return System::architecture_; }
@@ -170,5 +169,4 @@ std::string System::architecture_name() {
     default:
       return "UNKNOWN";
   }
-  return "UNKNOWN";
 }

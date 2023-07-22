@@ -24,8 +24,7 @@
 
 #include "nesp_logger.h"
 
-namespace nesp {
-namespace logger {
+namespace nesp::logger {
 class FilePrinter final : public Logger::Printer {
  public:
   class CompressNameFormat {
@@ -64,13 +63,13 @@ class FilePrinter final : public Logger::Printer {
 
   string file_name();
 
-  void set_max_per_file_size(ulong size);
+  void set_max_per_file_size(uint64_t size);
 
-  ulong max_per_file_size();
+  uint64_t max_per_file_size();
 
-  void set_max_file_count(uint count);
+  void set_max_file_count(uint32_t count);
 
-  uint max_file_count();
+  uint32_t max_file_count();
 
   void set_async(bool async);
 
@@ -80,7 +79,6 @@ class FilePrinter final : public Logger::Printer {
 
   ~FilePrinter() override;
 };
-}  // namespace logger
-}  // namespace nesp
+}  // namespace nesp::logger
 
 #endif  // NESP_LOGGER_FILE_PRINTER_H

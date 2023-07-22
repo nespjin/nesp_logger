@@ -23,11 +23,11 @@
 
 #define GZIP_ENCODING 16
 
-long nesp::logger::GzipUtil::Compress(const char *src, uint src_len, char *dest,
-                                      uint dest_len) {
+long nesp::logger::GzipUtil::Compress(const char *src, uint32_t src_len,
+                                      char *dest, uint32_t dest_len) {
   z_stream stream;
-  int err;
-  int window_bits = 15;
+  uint32_t err;
+  uint32_t window_bits = 15;
 
   if (src == nullptr || src_len <= 0) return -1;
 
@@ -67,20 +67,20 @@ long nesp::logger::GzipUtil::Compress(const char *src, uint src_len, char *dest,
   return (long)stream.total_out;
 }
 
-long nesp::logger::GzipUtil::Uncompress(const char *src, uint srcLen,
-                                        char *dest, uint destLen) {
+uint32_t nesp::logger::GzipUtil::Uncompress(const char *src, uint32_t src_len,
+                                        char *dest, uint32_t dest_len) {
   z_stream stream;
   stream.zalloc = nullptr;
   stream.zfree = nullptr;
   stream.opaque = nullptr;
 
-  stream.avail_in = srcLen;
-  stream.avail_out = destLen;
+  stream.avail_in = src_len;
+  stream.avail_out = dest_len;
   stream.next_in = (Bytef *)src;
   stream.next_out = (Bytef *)dest;
 
-  int err;
-  ulong ret;
+  uint32_t err;
+  uint64_t ret;
 
   err = inflateInit2(&stream, MAX_WBITS + 16);
   if (err == Z_OK) {

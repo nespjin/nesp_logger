@@ -20,15 +20,13 @@
 
 #include "nesp_logger.h"
 
-namespace nesp {
-namespace logger {
+namespace nesp::logger {
 class ConsolePrinter : public Logger::Printer {
  public:
   void Print(Logger::LogRecord log_record) override;
 
   ~ConsolePrinter() override;
 };
-}  // namespace logger
-}  // namespace nesp
+}  // namespace nesp::logger
 
 #endif  // NESP_LOGGER_CONSOLE_PRINTER_H

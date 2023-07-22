@@ -30,8 +30,7 @@
 
 using namespace std;
 
-namespace nesp {
-namespace logger {
+namespace nesp::logger {
 class DefaultCompressNameFormat : public FilePrinter::CompressNameFormat {
   string Format(string file_name, int num) override {
     return file_name + "-" + to_string(num) + ".gz";
@@ -39,8 +38,7 @@ class DefaultCompressNameFormat : public FilePrinter::CompressNameFormat {
 
   ~DefaultCompressNameFormat() override = default;
 };
-}  // namespace logger
-}  // namespace nesp
+}  // namespace nesp::logger
 
 nesp::logger::FilePrinter::FilePrinter(const string &dirPath) {
   this->dir_path_ = dirPath;
@@ -57,19 +55,19 @@ void nesp::logger::FilePrinter::set_file_name(const string &name) {
 
 string nesp::logger::FilePrinter::file_name() { return file_name_; }
 
-void nesp::logger::FilePrinter::set_max_per_file_size(ulong size) {
+void nesp::logger::FilePrinter::set_max_per_file_size(uint64_t size) {
   this->max_per_file_size_ = size;
 }
 
-ulong nesp::logger::FilePrinter::max_per_file_size() {
+uint64_t nesp::logger::FilePrinter::max_per_file_size() {
   return max_per_file_size_;
 }
 
-void nesp::logger::FilePrinter::set_max_file_count(uint count) {
+void nesp::logger::FilePrinter::set_max_file_count(uint32_t count) {
   this->max_file_count_ = count;
 }
 
-uint nesp::logger::FilePrinter::max_file_count() { return max_file_count_; }
+uint32_t nesp::logger::FilePrinter::max_file_count() { return max_file_count_; }
 
 void nesp::logger::FilePrinter::set_async(bool async) {
   this->is_async_ = async;
@@ -104,8 +102,8 @@ void nesp::logger::FilePrinter::Print(
 
   ifstream dir(dir_path_);
 
-  // TODO: replace mkdir with mkdirs
-  if (!dir.good() && ::mkdir(dir_path_.c_str(), 0777) != 0) {
+  // TODO: replace mkdir with mkdirs, 0777
+  if (!dir.good() && ::mkdir(dir_path_.c_str()) != 0) {
     cout << TAG << " print: mkdir log dir(" << dir_path_ << ") failed";
     return;
   }

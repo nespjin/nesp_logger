@@ -23,15 +23,13 @@
 
 #include "../include/nesp_logger.h"
 
-namespace nesp {
-namespace logger {
+namespace nesp::logger {
 class DefaultMessageFormat : public Logger::Formatter {
  public:
   string Format(Logger::LogRecord record) override;
 
   ~DefaultMessageFormat() override;
 };
-}  // namespace logger
-}  // namespace nesp
+}  // namespace nesp::logger
 
 #endif  // NESP_LOGGER_DEFAULT_MESSAGE_FORMAT_H

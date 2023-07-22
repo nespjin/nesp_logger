@@ -26,22 +26,20 @@
 
 #include "../include/nesp_logger.h"
 
-namespace nesp {
-namespace logger {
+namespace nesp::logger {
 class GzipUtil {
  private:
   GzipUtil() = default;
 
  public:
-  static long Compress(const char *src, uint src_len, char *dest,
-                       uint dest_len);
+  static long Compress(const char *src, uint32_t src_len, char *dest,
+                       uint32_t dest_len);
 
-  static long Uncompress(const char *src, uint src_len, char *dest,
-                         uint dest_len);
+  static uint32_t Uncompress(const char *src, uint32_t src_len, char *dest,
+                         uint32_t dest_len);
 
   ~GzipUtil() = default;
 };
-}  // namespace logger
-}  // namespace nesp
+}  // namespace nesp::logger
 
 #endif  // NESP_LOGGER_GZIP_UTIL_H

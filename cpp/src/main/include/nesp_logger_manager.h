@@ -28,8 +28,7 @@
 
 using namespace std;
 
-namespace nesp {
-namespace logger {
+namespace nesp::logger {
 class LoggerManager {
  private:
   LoggerManager();
@@ -53,7 +52,6 @@ class LoggerManager {
   ~LoggerManager();
 };
 
-}  // namespace logger
-}  // namespace nesp
+}  // namespace nesp::logger
 
 #endif  // NESP_LOGGER_NESP_LOGGER_MANAGER_H

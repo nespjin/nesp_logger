@@ -20,8 +20,7 @@
 
 #include "nesp_logger.h"
 
-namespace nesp {
-namespace logger {
+namespace nesp::logger {
 class LoggerImpl : public Logger {
  private:
   string name_;
@@ -39,7 +38,6 @@ class LoggerImpl : public Logger {
   ~LoggerImpl() override;
 };
 
-}  // namespace logger
-}  // namespace nesp
+}  // namespace nesp::logger
 
 #endif  // NESP_LOGGER_LOGGER_IMPL_H
