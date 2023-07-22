@@ -65,15 +65,15 @@ class FilePrinter final : public Logger::Printer {
 
   void set_max_per_file_size(uint64_t size);
 
-  uint64_t max_per_file_size();
+  uint64_t max_per_file_size() const;
 
   void set_max_file_count(uint32_t count);
 
-  uint32_t max_file_count();
+  uint32_t max_file_count() const;
 
   void set_async(bool async);
 
-  bool async();
+  bool async() const;
 
   void Print(Logger::LogRecord log_record) override;
 
