@@ -41,7 +41,7 @@ impl Format for DefaultMessageFormat {
             };
 
         return format!(
-            "{}\t{:?}\t{}\t[{}]\t{}\t{}\t{} {}:{}",
+            "{}\t{:?}\t{}\t[{}]\t{}\t{}{} {}:{}",
             current_time_str,
             record.level,
             record.pid,

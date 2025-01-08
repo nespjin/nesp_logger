@@ -13,5 +13,5 @@
 use crate::log_record::LogRecord;
 
 pub trait Printer {
-    fn print(&self, record: LogRecord);
+    fn print(&self, record: &LogRecord);
 }

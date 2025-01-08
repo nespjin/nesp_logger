@@ -10,7 +10,7 @@
  * for the specific language governing permissions and limitations under the License.
  */
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Level {
     Debug,
     Info,

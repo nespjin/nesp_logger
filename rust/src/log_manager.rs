@@ -11,27 +11,31 @@
  * for the specific language governing permissions and limitations under the License.
  */
 
+use std::cell::RefCell;
 use std::collections::HashMap;
+use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 
 use crate::config::config::Config;
-use crate::filter::Filter;
-use crate::format::format::Format;
+use crate::filter::ReleaseFilter;
+use crate::format::default_message_format::DefaultMessageFormat;
 use crate::nesp_logger::Logger;
 use crate::printer::console_printer::ConsolePrinter;
 
 pub struct LogManager {
     logger_cache: HashMap<String, Logger>,
+    config: Rc<RefCell<Config<DefaultMessageFormat, ReleaseFilter>>>,
 }
 
 impl LogManager {
-    pub fn shared() -> Arc<Mutex<LogManager>> {
+  pub fn shared() -> Arc<Mutex<LogManager>> {
         static mut INSTANCE: Option<Arc<Mutex<LogManager>>> = None;
         unsafe {
             INSTANCE
                 .get_or_insert_with(|| {
                     let manager = LogManager {
                         logger_cache: HashMap::new(),
+                        config: Rc::new(RefCell::new(Config::new_default())),
                     };
                     manager.init();
                     Arc::new(Mutex::new(manager))
@@ -41,19 +45,21 @@ impl LogManager {
     }
 
     fn init(&self) {
-        let mut default_config = Config::new_default();
-        default_config.add_printer(Box::new(ConsolePrinter::new()));
+        self.config.borrow_mut().add_printer(Rc::new(RefCell::new(ConsolePrinter::new())));
     }
 
     pub fn get_logger(&mut self, name: String) -> Logger {
         let name_local = name.clone();
         let old_value = self.logger_cache.get(&name_local);
-        let mut ret: Option<Logger> = None;
         if old_value.is_none() {
-            self.logger_cache.insert(name, Logger::new(name_local));
-        } else {
-            ret = Some(self.logger_cache.get(&name_local).unwrap().clone());
+            self.logger_cache
+                .insert(name, Logger::new(name_local.clone()));
         }
+        let ret = Some(self.logger_cache.get(&name_local).unwrap().clone());
         return ret.unwrap();
+    }
+
+    pub fn get_config(&self) -> Rc<RefCell<Config<DefaultMessageFormat, ReleaseFilter>>> {
+        return self.config.clone();
     }
 }

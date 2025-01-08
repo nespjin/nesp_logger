@@ -11,7 +11,9 @@
  *
  */
 
-use std::ops::Index;
+
+use  std::ptr::eq;
+use std::{cell::RefCell, ops::IndexMut, rc::Rc};
 
 use crate::{
     filter::{Filter, ReleaseFilter},
@@ -25,20 +27,20 @@ pub struct Config<T: Format, F: Filter> {
     pub level: Level,
     pub filter: Option<F>,
     pub enabled: bool,
-    printers: Vec<Box<dyn Printer>>,
+    printers: Vec<Rc<RefCell<dyn Printer>>>,
 }
 
 impl<T: Format, F: Filter> Config<T, F> {
-    pub fn add_printer(&mut self, printer: Box<dyn Printer>) {
+    pub fn add_printer(&mut self, printer: Rc<RefCell<dyn Printer>>) {
         self.printers.push(printer);
     }
 
-    pub fn remove_printer(&self, printer: Box<dyn Printer>) {
-        // self.printers.ind;
+    pub fn remove_printer(&mut self, printer: &Rc<RefCell<dyn Printer>>) {
+        self.printers.retain(|p| eq(p.as_ptr(), printer.as_ptr()));
     }
 
-    pub fn get_printers(&self) -> Vec<Box<dyn Printer>> {
-        return self.printers;
+    pub fn get_printers(&self) -> Vec<Rc<RefCell<dyn Printer>>> {
+        return self.printers.clone();
     }
 }
 

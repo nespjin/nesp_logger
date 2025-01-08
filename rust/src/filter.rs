@@ -14,13 +14,13 @@
 use crate::{level::Level, log_record::LogRecord};
 
 pub trait Filter {
-    fn enabled(&self, record: LogRecord) -> bool;
+    fn enabled(&self, record: &LogRecord) -> bool;
 }
 
 pub struct ReleaseFilter;
 
 impl Filter for ReleaseFilter {
-    fn enabled(&self, record: LogRecord) -> bool {
+    fn enabled(&self, record: &LogRecord) -> bool {
         return matches!(record.level, Level::Debug);
     }
 }
