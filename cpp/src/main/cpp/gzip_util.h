@@ -1,12 +1,15 @@
 // Copyright (c) 2023. NESP Technology.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License. You may obtain a copy of the License at
+// you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
-// on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
-// for the specific language governing permissions and limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
 
 //
 // Team: NESP Technology
@@ -23,19 +26,20 @@
 
 #include "../include/nesp_logger.h"
 
-namespace NespLogger {
-    class GzipUtil {
-    private:
-        GzipUtil() = default;
+namespace nesp::logger {
+class GzipUtil {
+ private:
+  GzipUtil() = default;
 
-    public:
-        static long compress(const char *src, uint srcLen, char *dest, uint destLen);
+ public:
+  static long Compress(const char *src, uint32_t src_len, char *dest,
+                       uint32_t dest_len);
 
-        static long uncompress(const char *src, uint srcLen, char *dest, uint destLen);
+  static uint32_t Uncompress(const char *src, uint32_t src_len, char *dest,
+                         uint32_t dest_len);
 
-        ~GzipUtil() = default;
-    };
-}
+  ~GzipUtil() = default;
+};
+}  // namespace nesp::logger
 
-
-#endif //NESP_LOGGER_GZIP_UTIL_H
+#endif  // NESP_LOGGER_GZIP_UTIL_H

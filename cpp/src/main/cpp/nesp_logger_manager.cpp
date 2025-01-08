@@ -1,75 +1,72 @@
 // Copyright (c) 2023-2023. NESP Technology.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License. You may obtain a copy of the License at
+// you may not use this file except in compliance with the License. You may
+// obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
-// on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
-// for the specific language governing permissions and limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
 
 //
 // Created by jinzhaolu on 2023/2/11.
 //
-#include <map>
-#include "../include/nesp_logger.h"
 #include "../include/nesp_logger_manager.h"
+
+#include <map>
+
+#include "../include/nesp_logger.h"
 #include "default_log_config.h"
 
-using namespace NespLogger;
+using namespace nesp::logger;
 
 class ReleaseFilter : public Logger::Filter {
-    bool isLoggable(Logger::LogRecord record) override {
-        return record.level != Logger::Level::DEBUG;
-    }
+  bool IsLogEnable(Logger::LogRecord record) override {
+    return record.level != Logger::Level::kDebug;
+  }
 
-    ~ReleaseFilter() override = default;
+  ~ReleaseFilter() override = default;
 };
 
-LoggerManager *LoggerManager::instance = nullptr;
+LoggerManager *LoggerManager::instance_ = nullptr;
 
 LoggerManager *LoggerManager::shared() {
-    if (instance == nullptr) {
-        instance = new LoggerManager();
-    }
-    return instance;
+  if (instance_ == nullptr) {
+    instance_ = new LoggerManager();
+  }
+  return instance_;
 }
 
 LoggerManager::LoggerManager() {
-    consolePrinter = new ConsolePrinter();
-    config = new DefaultLogConfig();
+  console_printer_ = std::make_shared<ConsolePrinter>();
+  config_ = new DefaultLogConfig();
 }
 
-Logger::Config *NespLogger::LoggerManager::getConfig() {
-    return config;
+Logger::Config *nesp::logger::LoggerManager::config() { return config_; }
+
+void LoggerManager::Initialize(bool debug, const string &directory_path,
+                               const string &file_name) {
+  config_->AddPrinter(console_printer_);
+  if (!debug) {
+    config_->set_filter(new ReleaseFilter());
+  }
 }
 
-void LoggerManager::initialize(bool isDebug, const string &directoryPath, const string &fileName) {
-    config->addPrinter(consolePrinter);
-    if (!isDebug) {
-        config->setFilter(new ReleaseFilter());
-    }
-}
-
-Logger *LoggerManager::getLogger(const string &name) {
-    const ulong count = loggerCache.count(name);
-    if (count > 0 && loggerCache[name] != nullptr) {
-        return loggerCache[name];
-    }
-    Logger *logger = new LoggerImpl(name);
-    loggerCache[name] = logger;
-    return logger;
+Logger *LoggerManager::logger(const string &name) {
+  const uint64_t count = logger_cache_.count(name);
+  if (count > 0 && logger_cache_[name] != nullptr &&
+      logger_cache_[name].get() != nullptr) {
+    return logger_cache_[name].get();
+  }
+  logger_cache_[name] = std::make_shared<LoggerImpl>(name);
+  return logger_cache_[name].get();
 }
 
 LoggerManager::~LoggerManager() {
-    delete consolePrinter;
-    delete config;
-
-    for (const auto &item: loggerCache) {
-        delete item.second;
-    }
-
-    loggerCache.clear();
-
-    instance = nullptr;
+  delete config_;
+  logger_cache_.clear();
+  instance_ = nullptr;
 }
