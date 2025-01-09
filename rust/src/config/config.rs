@@ -11,26 +11,27 @@
  *
  */
 
-
-use  std::ptr::eq;
+use std::ptr::eq;
 use std::{cell::RefCell, rc::Rc};
+use chrono::FixedOffset;
 
 use crate::{
-    filter::{Filter, ReleaseFilter},
+    filter::Filter,
     format::{default_message_format::DefaultMessageFormat, format::Format},
     level::Level,
     printer::printer::Printer,
 };
 
-pub struct Config<T: Format, F: Filter> {
-    pub format: Option<T>,
+pub struct Config {
+    pub format: Option<Rc<RefCell<dyn Format>>>,
     pub level: Level,
-    pub filter: Option<F>,
+    pub filter: Option<Rc<RefCell<dyn Filter>>>,
     pub enabled: bool,
+    pub time_zone: Option<FixedOffset>,
     printers: Vec<Rc<RefCell<dyn Printer>>>,
 }
 
-impl<T: Format, F: Filter> Config<T, F> {
+impl Config {
     pub fn add_printer(&mut self, printer: Rc<RefCell<dyn Printer>>) {
         self.printers.push(printer);
     }
@@ -44,13 +45,14 @@ impl<T: Format, F: Filter> Config<T, F> {
     }
 }
 
-impl Config<DefaultMessageFormat, ReleaseFilter> {
-    pub fn new_default() -> Config<DefaultMessageFormat, ReleaseFilter> {
+impl Config {
+    pub fn new_default() -> Config {
         return Config {
-            format: Some(DefaultMessageFormat::new()),
+            format: Some(Rc::new(RefCell::new(DefaultMessageFormat::new()))),
             level: Level::Debug,
             filter: None,
             enabled: true,
+            time_zone: None,
             printers: vec![],
         };
     }

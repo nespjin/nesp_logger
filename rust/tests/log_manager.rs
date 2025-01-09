@@ -1,6 +1,8 @@
 use std::{cell::RefCell, rc::Rc};
 
+use chrono::FixedOffset;
 use nesp_logger::{
+    filter::ReleaseFilter,
     log_manager::LogManager,
     nesp_logger::ILogger,
     printer::{console_printer::ConsolePrinter, printer::Printer},
@@ -8,25 +10,34 @@ use nesp_logger::{
 
 #[test]
 fn test_log_manager() {
-    // let mut i:i64 = 99999999999999999;
-
     let printer: Rc<RefCell<dyn Printer>> = Rc::new(RefCell::new(ConsolePrinter::new()));
 
-    let mut i: i64 = 2;
+    static COUNT: i64 = 2;
+    // static COUNT: i64 = 100000;
+    // static COUNT: i64 = 99999999999999999;
+
+    let mut i: i64 = COUNT;
     while i > 0 {
         let log_manager_arc = LogManager::shared();
         let mut log_manager = log_manager_arc.lock().unwrap();
         let logger = log_manager.get_logger("test_class".to_string());
 
-        if i == 2 {
-            log_manager.get_config().borrow_mut().add_printer(printer.clone());
+        let cfg = log_manager.get_config();
+
+        if i == COUNT {
+            // Add a custom printer to config
+            cfg.borrow_mut().add_printer(printer.clone());
+
+            //  Set a custom filter to ReleaseFilter
+            cfg.borrow_mut().filter = Some(Rc::new(RefCell::new(ReleaseFilter)));
+
+            // Set time zone to UTC+8
+            cfg.borrow_mut().time_zone = FixedOffset::east_opt(8 * 3600);
         }
 
-        if i < 2 {
-            log_manager
-                .get_config()
-                .borrow_mut()
-                .remove_printer(&printer);
+        if i < COUNT {
+            // Test remove a printer
+            cfg.borrow_mut().remove_printer(&printer);
         }
 
         drop(log_manager);

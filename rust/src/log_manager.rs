@@ -17,23 +17,21 @@ use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 
 use crate::config::config::Config;
-use crate::filter::ReleaseFilter;
-use crate::format::default_message_format::DefaultMessageFormat;
 use crate::nesp_logger::Logger;
 use crate::printer::console_printer::ConsolePrinter;
 
 pub struct LogManager {
     logger_cache: HashMap<String, Logger>,
-    config: Rc<RefCell<Config<DefaultMessageFormat, ReleaseFilter>>>,
+    config: Rc<RefCell<Config>>,
 }
 
 impl LogManager {
-  pub fn shared() -> Arc<Mutex<LogManager>> {
+    pub fn shared() -> Arc<Mutex<LogManager>> {
         static mut INSTANCE: Option<Arc<Mutex<LogManager>>> = None;
         unsafe {
             INSTANCE
                 .get_or_insert_with(|| {
-                    let manager = LogManager {
+                    let manager: LogManager = LogManager {
                         logger_cache: HashMap::new(),
                         config: Rc::new(RefCell::new(Config::new_default())),
                     };
@@ -45,7 +43,9 @@ impl LogManager {
     }
 
     fn init(&self) {
-        self.config.borrow_mut().add_printer(Rc::new(RefCell::new(ConsolePrinter::new())));
+        self.config
+            .borrow_mut()
+            .add_printer(Rc::new(RefCell::new(ConsolePrinter::new())));
     }
 
     pub fn get_logger(&mut self, name: String) -> Logger {
@@ -59,7 +59,7 @@ impl LogManager {
         return ret.unwrap();
     }
 
-    pub fn get_config(&self) -> Rc<RefCell<Config<DefaultMessageFormat, ReleaseFilter>>> {
+    pub fn get_config(&self) -> Rc<RefCell<Config>> {
         return self.config.clone();
     }
 }

@@ -1,8 +1,3 @@
-use std::{
-    cell::RefCell,
-    rc::Rc,
-};
-
 /*
  * Copyright (c) 2023. NESP Technology.
  *
@@ -14,12 +9,12 @@ use std::{
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  * for the specific language governing permissions and limitations under the License.
  */
-use chrono::Utc;
 
 use crate::{
-    filter::Filter, format::format::Format, level::Level, log_manager::LogManager,
-    log_record::LogRecord, printer::printer::Printer,
+    level::Level, log_manager::LogManager, log_record::LogRecord, printer::printer::Printer,
 };
+use chrono::Utc;
+use std::{cell::RefCell, rc::Rc};
 
 pub struct LogOptions {
     pub printer: Option<Rc<RefCell<dyn Printer>>>,
@@ -213,15 +208,14 @@ impl ILogger for Logger {
             exp: exception,
         };
 
-        let format = config.borrow().format;
-        if format.is_some() {
-            let formatted_message = format.unwrap().format(&record);
+        if let Some(format) = config.borrow().format.clone() {
+            let formatted_message = format.borrow().format(&record);
             record.message_formatted = formatted_message;
         }
 
         let filter = &config.borrow().filter;
         if filter.is_some() {
-            if !filter.as_ref().unwrap().enabled(&record) {
+            if !filter.as_ref().unwrap().borrow().enabled(&record) {
                 return;
             }
         }

@@ -11,10 +11,10 @@
  *
  */
 
-use chrono::{TimeZone, Utc};
-
 use crate::format::format::Format;
+use crate::log_manager::LogManager;
 use crate::log_record::LogRecord;
+use chrono::{FixedOffset, TimeZone, Utc};
 
 #[derive(Debug, Clone, Copy)]
 pub struct DefaultMessageFormat {}
@@ -27,11 +27,18 @@ impl DefaultMessageFormat {
 
 impl Format for DefaultMessageFormat {
     fn format(&self, record: &LogRecord) -> String {
-        let current_time_str = Utc
-            .timestamp_millis_opt(record.time)
-            .unwrap()
-            .format("%Y-%m-%d %H:%M:%S")
-            .to_string();
+        let log_manager_mutex = LogManager::shared();
+        let log_manager = log_manager_mutex.lock().unwrap();
+        let config = log_manager.get_config();
+        drop(log_manager);
+
+        let current_utc_time = Utc.timestamp_millis_opt(record.time).unwrap();
+        let current_time = match config.borrow().time_zone {
+            Some(time_zone) => current_utc_time.with_timezone(&time_zone),
+            None => current_utc_time.with_timezone(&FixedOffset::east_opt(0).unwrap()),
+        };
+
+        let current_time_str = current_time.format("%Y-%m-%d %H:%M:%S").to_string();
 
         let middle_of_class_method_name =
             if !record.class_name.is_empty() && !record.class_name.is_empty() {

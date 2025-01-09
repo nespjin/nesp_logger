@@ -17,10 +17,13 @@ pub trait Filter {
     fn enabled(&self, record: &LogRecord) -> bool;
 }
 
+/// The release filter.
+/// 
+/// This filter will only allow logs with a level higher than `Level::Debug`.
 pub struct ReleaseFilter;
 
 impl Filter for ReleaseFilter {
     fn enabled(&self, record: &LogRecord) -> bool {
-        return matches!(record.level, Level::Debug);
+        return  record.level > Level::Debug;
     }
 }

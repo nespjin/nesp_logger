@@ -10,23 +10,31 @@
  * for the specific language governing permissions and limitations under the License.
  */
 
-#[derive(Debug, Clone)]
+use std::cmp::{Ord, Ordering, PartialOrd};
+
+#[derive(Copy, Debug, Clone, PartialEq, Eq)]
 pub enum Level {
-    Debug,
-    Info,
-    Warn,
-    Error,
-    Fatal,
+    Debug = 0,
+    Info = 1,
+    Warn = 2,
+    Error = 3,
+    Fatal = 4,
 }
 
 impl Level {
     pub fn index(&self) -> u32 {
-        match self {
-            Level::Debug => return 0,
-            Level::Info => return 1,
-            Level::Warn => return 2,
-            Level::Error => return 3,
-            Level::Fatal => return 4,
-        }
+        return *self as u32;
+    }
+}
+
+impl PartialOrd for Level {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Level {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        (*self as u32).cmp(&(*other as u32))
     }
 }
