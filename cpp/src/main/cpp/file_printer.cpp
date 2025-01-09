@@ -13,7 +13,7 @@
 
 #include "../include/file_printer.h"
 
-#include <sys/stat.h>
+#include<filesystem>
 
 #include <fstream>
 #include <iostream>
@@ -38,13 +38,13 @@ namespace nesp::logger {
 
         ~DefaultCompressNameFormat() override = default;
     };
-}  // namespace nesp::logger
+} // namespace nesp::logger
 
 nesp::logger::FilePrinter::FilePrinter(const string &dir_path) {
     this->dir_path_ = dir_path;
     this->file_name_ = "log";
     this->compress_name_format_ = new DefaultCompressNameFormat();
-    this->max_per_file_size_ = 1024 * 1024 * 100L;  // 100M
+    this->max_per_file_size_ = 1024 * 1024 * 100L; // 100M
     this->max_file_count_ = 5;
     this->is_async_ = false;
 }
@@ -87,14 +87,13 @@ string &Trim(string &str) {
 }
 
 bool isDir(const string &dir_path) {
-    struct stat buffer{};
-    return (stat(dir_path.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode));
+    return filesystem::is_directory(dir_path);
 }
 
-void DoPrint(const string &dir_path, const nesp::logger::Logger::LogRecord& record);
+void DoPrint(const string &dir_path, const nesp::logger::Logger::LogRecord &record);
 
 void nesp::logger::FilePrinter::Print(
-        nesp::logger::Logger::LogRecord log_record) {
+    Logger::LogRecord log_record) {
     if (Trim(dir_path_).empty()) {
         cout << TAG << " print: The dir path must not be empty";
         return;
@@ -103,7 +102,8 @@ void nesp::logger::FilePrinter::Print(
     ifstream dir(dir_path_);
 
     // TODO: replace mkdir with mkdirs, 0777
-    if (!dir.good() && ::mkdir(dir_path_.c_str()) != 0) {
+
+    if (!filesystem::exists(dir_path_) && filesystem::create_directories(dir_path_)) {
         cout << TAG << " print: mkdir log dir(" << dir_path_ << ") failed";
         return;
     }
@@ -117,7 +117,8 @@ void nesp::logger::FilePrinter::Print(
     DoPrint(dir_path_, log_record);
 }
 
-void DoPrint(const string &dir_path, const nesp::logger::Logger::LogRecord& record) {}
+void DoPrint(const string &dir_path, const nesp::logger::Logger::LogRecord &record) {
+}
 
 nesp::logger::FilePrinter::~FilePrinter() {
     delete this->compress_name_format_;
