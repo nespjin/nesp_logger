@@ -27,19 +27,19 @@ impl ConsolePrinter {
 
 impl Printer for ConsolePrinter {
     fn print(&self, record: &LogRecord) {
-        let colour =  match &record.level {
+        let style =  match &record.level {
             Level::Warn => {
-                Colour::Yellow
+                Colour::Yellow.normal()
             }
             Level::Error => {
-                 Colour::Red
+                 Colour::Red.normal()
             }
             Level::Fatal => {
-                Colour::Red
+                Colour::Red.bold()
             }
-            _ => { Colour::Black}
+            _ => { Colour::Black.normal()}
         };
 
-        println!("{}", colour.paint(&*record.message_formatted));
+        println!("{}", style.paint(&*record.message_formatted));
     }
 }
